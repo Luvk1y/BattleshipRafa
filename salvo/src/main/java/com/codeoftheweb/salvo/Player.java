@@ -25,49 +25,59 @@ public class Player {
     @GenericGenerator(name = "native", strategy = "native")
     private long id;
     
-    public String user;
-    public String password;
-
-    @OneToMany(mappedBy="owner")
-    Set<Game> GamesPlayed = new HashSet<>();
+    public String userName;
+    public String passWord;
+    public String email;
+    @OneToMany(mappedBy="player")
+    Set<GamePlayer> gameplayers = new HashSet<>();
 
     public Player() { }
     
-    public Player(String first, String last) {
-        user = first;
-        password = last;
+    public Player(String username, String password, String mail) {
+        userName = username;
+        passWord = password;
+        email = mail;
+
+    }
+    public Long getId() {
+        return id;
+    }
+    public void setId(Long id) {
+        this.id = id;
     }
 
-
-
     public String getUser() {
-        return user;
+        return userName;
     }
     
     public void setUser(String user) {
-        this.user = user;
+        this.userName = user;
     }
     
     public String getPassword() {
-        return password;
+        return passWord;
     }
     
     public void setPassword(String password) {
-        this.password = password;
+        this.passWord = password;
     }
-
-    public Set<Game> getGamesPlayed() {
-        return GamesPlayed;
+    public String getEmail() {
+        return email;
     }
-
-   public void addGame(Game game) {
-        game.setOwner(this);
-       GamesPlayed.add(game);
+    public void setEmail(String email) {
+        this.email = email;
+    }
+    public Set<GamePlayer> getGamesPlayed() {
+        return gameplayers;
+    }
+   public void addGamePlayer(GamePlayer gameplayer) {
+        gameplayer.setPlayer(this);
+       gameplayers.add(gameplayer);
     }
 
     @JsonIgnore
     public List<Game> getGames() {
-        return GamesPlayed.stream().map(sub -> sub.getGame()).collect(Collectors.toList()); // ???
+        return gameplayers.stream().map(sub -> sub.getGame()).collect(Collectors.toList()); // ???
     }
 
 }

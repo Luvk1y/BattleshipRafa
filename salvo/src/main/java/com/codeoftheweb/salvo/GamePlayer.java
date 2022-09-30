@@ -4,10 +4,10 @@ package com.codeoftheweb.salvo;
 import java.lang.Long;
 import java.util.HashSet;
 import java.util.Set;
-
+import java.util.Date;
+import javax.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.*;
 
 @Entity
 public class GamePlayer {
@@ -15,7 +15,7 @@ public class GamePlayer {
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
     private Long id;
-
+    private Date creationDate = new Date();
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="player_id")
     private Player player;
@@ -24,13 +24,23 @@ public class GamePlayer {
     @JoinColumn(name="game_id")
     private Game game;
 
+    @OneToMany(mappedBy="game", fetch=FetchType.EAGER)
+    Set <GamePlayer> gamePlayers = new HashSet<>();
     @OneToMany(mappedBy = "gamePlayer", fetch = FetchType.EAGER)
     private Set<Ship> ships = new HashSet<>();
 
     public GamePlayer() {}
 
+    public GamePlayer(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
     public Long getId() {
-        return this.id;
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public GamePlayer(Game game ,Player player) {
@@ -39,23 +49,23 @@ public class GamePlayer {
     }
 
     public Player getPlayer() {
-        return this.player;
+        return player;
     }
 
-    public void setUser(Player player) {
+    public void setPlayer(Player player) {
         this.player = player;
     }
 
     public Game getGame() {
-        return this.game;
+        return game;
     }
 
     public void setGame(Game game) {
         this.game = game;
     }
 
-    public Set<Ship> getShip() {
-        return this.ships;
+    public Set<Ship> getShips() {
+        return ships;
     }
 
     public void setShips(Set<Ship> ship) {
@@ -64,6 +74,6 @@ public class GamePlayer {
 
     public void addShip(Ship ship) {
         ship.setGamePlayer(this);
-        this.ships.add(ship);
+        ships.add(ship);
     }
 }
